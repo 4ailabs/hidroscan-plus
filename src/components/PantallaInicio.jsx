@@ -96,29 +96,42 @@ const FeatureItem = styled.li`
 `;
 
 const PantallaInicio = () => {
-  // Evitamos desestructurar useApp directamente
-  let navegarA = () => console.log('Navegación no disponible'); 
-  let config = {
-    nombreApp: 'HidroScanPlus',
-    logoUrl: 'logo.svg'
-  };
+  // Acceso al contexto con try/catch para evitar errores
+  let context = null;
   
   try {
-    const context = useApp();
-    if (context) {
-      navegarA = context.navegarA || navegarA;
-      config = context.config || config;
-    }
+    context = useApp();
   } catch (error) {
     console.error("Error al acceder al contexto en PantallaInicio:", error);
   }
   
   const handleStartClick = () => {
-    navegarA('cuestionario');
+    try {
+      console.log("Botón 'Comenzar evaluación' pulsado");
+
+      // Si context existe y tiene navegarA, usarlo
+      if (context && typeof context.navegarA === 'function') {
+        console.log("Intentando navegar a 'cuestionario'");
+        context.navegarA('cuestionario');
+      } else {
+        // Como fallback, mostrar un mensaje de depuración
+        console.error("Función navegarA no disponible");
+        alert("La navegación no está disponible en este momento. Por favor, intenta de nuevo más tarde.");
+      }
+    } catch (error) {
+      console.error("Error al intentar navegar:", error);
+      alert("Ocurrió un error al intentar navegar. Consulta la consola para más detalles.");
+    }
   };
   
   const handleInfoClick = () => {
     alert('HidroScanPlus es una herramienta diseñada para evaluar tu riesgo de deficiencia en vitaminas hidrosolubles, basada en investigaciones científicas actualizadas.');
+  };
+
+  // Extraer config con seguridad
+  const config = context?.config || {
+    nombreApp: 'HidroScanPlus',
+    logoUrl: 'logo.svg'
   };
   
   return (
@@ -143,7 +156,7 @@ const PantallaInicio = () => {
         <FeatureItem>Referencias científicas para todas las evaluaciones</FeatureItem>
       </FeatureList>
       
-      <Button onClick={handleStartClick}>Comenzar evaluación</Button>
+      <Button onClick={handleStartClick} id="start-button">Comenzar evaluación</Button>
       <SecondaryButton onClick={handleInfoClick}>Más información</SecondaryButton>
     </Container>
   );
