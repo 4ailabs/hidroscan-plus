@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.jsx';
 import GlobalStyles from '../styles/globalStyles';
 import { theme, darkTheme } from '../styles/theme';
 import PantallaInicio from './PantallaInicio';
