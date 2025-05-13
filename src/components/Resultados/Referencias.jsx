@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useApp } from '../../context/AppContext';
+import { useApp } from '../../context/AppContext.jsx';
 import { REFERENCIAS_CIENTIFICAS } from '../../data/nutrientes';
 
 // Contenedor principal para las referencias
