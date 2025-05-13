@@ -79,7 +79,7 @@ const Button = styled.button`
   }
 `;
 
-const Cuestionario = () => {
+const Cuestionario = ({ navegarA }) => {
   const [respuesta, setRespuesta] = React.useState('');
   
   const handleRespuestaChange = (e) => {
@@ -87,14 +87,13 @@ const Cuestionario = () => {
   };
   
   const handleVolverClick = () => {
-    // Intenta obtener el elemento raíz
-    const rootElement = document.getElementById('root');
-    if (rootElement) {
-      // Renderiza de nuevo la pantalla de inicio
-      rootElement.innerHTML = '<div style="text-align: center; padding: 50px;"><h2>Volviendo a la pantalla de inicio...</h2><p>Por favor, recarga la página.</p></div>';
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+    if (typeof navegarA === 'function') {
+      console.log("Volviendo a inicio usando navegarA");
+      navegarA('inicio');
+    } else {
+      console.log("Volviendo a inicio con reload");
+      // Fallback si la navegación no está disponible
+      window.location.reload();
     }
   };
   
