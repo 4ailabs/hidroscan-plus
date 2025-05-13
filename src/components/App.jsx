@@ -4,9 +4,6 @@ import { useApp } from '../context/AppContext';
 import GlobalStyles from '../styles/globalStyles';
 import { theme, darkTheme } from '../styles/theme';
 import PantallaInicio from './PantallaInicio';
-// Importaremos estos componentes cuando los creemos
-// import Cuestionario from './Cuestionario';
-// import Resultados from './Resultados';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -23,7 +20,7 @@ const ContentContainer = styled.div`
   max-width: 600px;
   height: 100%;
   min-height: 80vh;
-  border-radius: ${props => props.borderRadius}px;
+  border-radius: ${props => props.borderRadius || 12}px;
   overflow: hidden;
   background-color: ${props => props.temaOscuro ? props.theme.colors.dark : 'white'};
   box-shadow: ${props => props.estiloTarjeta === 'elevado' ? props.theme.shadows.md : 'none'};
@@ -49,8 +46,41 @@ const Footer = styled.div`
   border-top: 1px solid ${props => props.temaOscuro ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
 `;
 
+// Valores predeterminados
+const defaultConfig = {
+  temaOscuro: false,
+  colorPrimario: "#2563eb",
+  colorSecundario: "#1e40af",
+  colorFondo: "#F8F9FA",
+  colorTexto: "#212529",
+  colorError: "#dc2626",
+  colorWarning: "#f59e0b",
+  colorSuccess: "#16a34a",
+  mostrarBarraProgreso: true,
+  logoUrl: "logo.svg",
+  nombreApp: "HidroScanPlus",
+  fontSizeBase: 16,
+  bordeRedondeado: 12,
+  estiloTarjeta: "elevado",
+  animaciones: true
+};
+
 const App = () => {
-  const { pantallaActual, config } = useApp();
+  // Manejamos el caso donde el contexto no está disponible
+  let pantallaActual = 'inicio';
+  let config = defaultConfig;
+  
+  try {
+    // Intentamos usar el contexto, pero podría fallar durante la hidratación
+    const context = useApp();
+    if (context) {
+      pantallaActual = context.pantallaActual || 'inicio';
+      config = context.config || defaultConfig;
+    }
+  } catch (error) {
+    console.error("Error al acceder al contexto:", error);
+    // Continuamos con los valores por defecto
+  }
   
   // Combinar tema base con configuración personalizada
   const temaCompleto = {
