@@ -80,11 +80,11 @@ export const AppProvider = ({ children }) => {
     config, actualizarConfig
   };
   
-  // Using React.createElement instead of JSX syntax
-  return React.createElement(
-    AppContext.Provider,
-    { value: contexto },
-    children
+  // Usando sintaxis JSX en lugar de React.createElement
+  return (
+    <AppContext.Provider value={contexto}>
+      {children}
+    </AppContext.Provider>
   );
 };
 
