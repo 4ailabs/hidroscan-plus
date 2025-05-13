@@ -31,7 +31,7 @@ const Subtitle = styled.h2`
   font-size: ${props => props.theme.fonts.baseSize * 1.1}px;
   color: ${props => props.theme.colors.text}cc;
   margin-bottom: 30px;
-  font-weight: ${props => props.theme.fonts.weights.medium};
+  font-weight: 500;
 `;
 
 const Description = styled.p`
@@ -44,14 +44,14 @@ const Button = styled.button`
   background-color: ${props => props.theme.colors.primary};
   color: white;
   border: none;
-  border-radius: ${props => props.theme.borderRadius.md};
+  border-radius: 8px;
   padding: 12px 25px;
   font-size: ${props => props.theme.fonts.baseSize * 1.1}px;
-  font-weight: ${props => props.theme.fonts.weights.medium};
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-bottom: 15px;
-  box-shadow: ${props => props.theme.shadows.sm};
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   
   &:hover {
     background-color: ${props => props.theme.colors.secondary};
@@ -89,35 +89,45 @@ const FeatureItem = styled.li`
   
   &:before {
     content: '✓';
-    color: ${props => props.theme.colors.success};
+    color: ${props => props.theme.colors.success || '#16a34a'};
     margin-right: 10px;
     font-weight: bold;
   }
 `;
 
 const PantallaInicio = () => {
-  const { navegarA, config } = useApp();
+  // Evitamos desestructurar useApp directamente
+  let navegarA = () => console.log('Navegación no disponible'); 
+  let config = {
+    nombreApp: 'HidroScanPlus',
+    logoUrl: 'logo.svg'
+  };
+  
+  try {
+    const context = useApp();
+    if (context) {
+      navegarA = context.navegarA || navegarA;
+      config = context.config || config;
+    }
+  } catch (error) {
+    console.error("Error al acceder al contexto en PantallaInicio:", error);
+  }
   
   const handleStartClick = () => {
     navegarA('cuestionario');
   };
   
   const handleInfoClick = () => {
-    // Aquí se podría mostrar más información sobre la aplicación
     alert('HidroScanPlus es una herramienta diseñada para evaluar tu riesgo de deficiencia en vitaminas hidrosolubles, basada en investigaciones científicas actualizadas.');
   };
   
   return (
     <Container>
       <Logo>
-        {config.logoUrl ? (
-          <img src={config.logoUrl} alt={config.nombreApp} />
-        ) : (
-          <img src="/logo.svg" alt={config.nombreApp} />
-        )}
+        <img src={config.logoUrl || 'logo.svg'} alt={config.nombreApp || 'HidroScanPlus'} />
       </Logo>
       
-      <Title>{config.nombreApp}</Title>
+      <Title>{config.nombreApp || 'HidroScanPlus'}</Title>
       
       <Subtitle>Evaluación personalizada de riesgo de deficiencias en vitaminas hidrosolubles</Subtitle>
       
