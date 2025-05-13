@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useApp } from '../../context/AppContext';
+import { useApp } from '../../context/AppContext.jsx';
 
 // Contenedor principal de la tarjeta
 const TarjetaContainer = styled.div`
