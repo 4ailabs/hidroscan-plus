@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import GlobalStyles from '../styles/globalStyles';
 import { theme, darkTheme } from '../styles/theme';
 import PantallaInicio from './PantallaInicio';
+import Cuestionario from './Cuestionario'; // Importamos el nuevo componente
 
 const AppContainer = styled.div`
   width: 100%;
@@ -66,16 +67,25 @@ const defaultConfig = {
 };
 
 const App = () => {
+  // Estado local para gestionar la navegación sin depender del contexto
+  const [currentScreen, setCurrentScreen] = React.useState('inicio');
+  
   // Manejamos el caso donde el contexto no está disponible
-  let pantallaActual = 'inicio';
+  let pantallaActual = currentScreen;
   let config = defaultConfig;
   
   try {
     // Intentamos usar el contexto, pero podría fallar durante la hidratación
     const context = useApp();
     if (context) {
-      pantallaActual = context.pantallaActual || 'inicio';
+      pantallaActual = context.pantallaActual || currentScreen;
       config = context.config || defaultConfig;
+      
+      // Sobrescribimos la función navegarA para que use nuestro estado local
+      context.navegarA = (screen) => {
+        console.log("Navegando a:", screen);
+        setCurrentScreen(screen);
+      };
     }
   } catch (error) {
     console.error("Error al acceder al contexto:", error);
@@ -101,19 +111,26 @@ const App = () => {
     },
   };
   
+  // Función local para navegación
+  const navegarA = (screen) => {
+    console.log("Navegando a:", screen);
+    setCurrentScreen(screen);
+  };
+  
   // Renderizar la pantalla actual basada en el estado
   const renderizarPantallaActual = () => {
-    switch (pantallaActual) {
+    console.log("Renderizando pantalla:", currentScreen);
+    
+    switch (currentScreen) {
       case 'inicio':
-        return <PantallaInicio />;
+        return <PantallaInicio navegarA={navegarA} />;
       case 'cuestionario':
-        // Temporalmente retornamos un mensaje hasta implementar el componente
-        return <div style={{ padding: 20, textAlign: 'center' }}>Componente de Cuestionario (por implementar)</div>;
+        return <Cuestionario navegarA={navegarA} />;
       case 'resultados':
         // Temporalmente retornamos un mensaje hasta implementar el componente
         return <div style={{ padding: 20, textAlign: 'center' }}>Componente de Resultados (por implementar)</div>;
       default:
-        return <PantallaInicio />;
+        return <PantallaInicio navegarA={navegarA} />;
     }
   };
 
