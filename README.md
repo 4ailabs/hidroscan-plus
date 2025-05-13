@@ -64,11 +64,12 @@ hidroscan-plus/
 │   │   ├── evaluadorNutrientes.js # Lógica de evaluación
 │   │   └── helpers.js         # Funciones auxiliares
 │   ├── context/               # Contextos de React
-│   │   └── AppContext.js      # Estado global de la aplicación
+│   │   └── AppContext.jsx     # Estado global de la aplicación
 │   ├── styles/                # Estilos CSS o styled-components
 │   │   ├── theme.js           # Tema de la aplicación
 │   │   └── globalStyles.js    # Estilos globales
-│   └── index.js               # Punto de entrada de la aplicación
+│   ├── index.jsx              # Punto de entrada de la aplicación
+│   └── index.css              # Estilos globales
 ```
 
 ## 🔧 Tecnologías utilizadas
@@ -209,6 +210,14 @@ Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICEN
 
 - A todos los colaboradores que han contribuido con su conocimiento y tiempo
 - A la comunidad científica por las investigaciones en el campo de la nutrición
+
+## 📌 Notas de actualización
+
+### v2.0.1 (13/05/2025)
+- Se corrigió la duplicidad de archivos de entrada (index.js, index.jsx)
+- Se estandarizó el uso de importaciones sin extensiones de archivo
+- Se corrigió la sintaxis JSX en AppContext para mayor consistencia
+- Se actualizó la documentación para reflejar la estructura actual del proyecto
 
 ---
 
