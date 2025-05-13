@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useApp } from '../context/AppContext';
 
 const Container = styled.div`
   padding: 20px;
@@ -95,27 +94,22 @@ const FeatureItem = styled.li`
   }
 `;
 
-const PantallaInicio = () => {
-  // Acceso al contexto con try/catch para evitar errores
-  let context = null;
-  
-  try {
-    context = useApp();
-  } catch (error) {
-    console.error("Error al acceder al contexto en PantallaInicio:", error);
-  }
+const PantallaInicio = ({ navegarA }) => {
+  // Extraer config con seguridad desde el contexto de tema
+  const config = {
+    nombreApp: 'HidroScanPlus',
+    logoUrl: 'logo.svg'
+  };
   
   const handleStartClick = () => {
     try {
       console.log("Botón 'Comenzar evaluación' pulsado");
-
-      // Si context existe y tiene navegarA, usarlo
-      if (context && typeof context.navegarA === 'function') {
-        console.log("Intentando navegar a 'cuestionario'");
-        context.navegarA('cuestionario');
+      
+      if (typeof navegarA === 'function') {
+        console.log("Usando función navegarA pasada como prop");
+        navegarA('cuestionario');
       } else {
-        // Como fallback, mostrar un mensaje de depuración
-        console.error("Función navegarA no disponible");
+        console.error("Función navegarA no disponible como prop");
         alert("La navegación no está disponible en este momento. Por favor, intenta de nuevo más tarde.");
       }
     } catch (error) {
@@ -126,12 +120,6 @@ const PantallaInicio = () => {
   
   const handleInfoClick = () => {
     alert('HidroScanPlus es una herramienta diseñada para evaluar tu riesgo de deficiencia en vitaminas hidrosolubles, basada en investigaciones científicas actualizadas.');
-  };
-
-  // Extraer config con seguridad
-  const config = context?.config || {
-    nombreApp: 'HidroScanPlus',
-    logoUrl: 'logo.svg'
   };
   
   return (
