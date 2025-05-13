@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HidroScanPlus - Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #f5f7fa;
+      color: #333;
+      text-align: center;
+    }
+    
+    h1 {
+      color: #0077cc;
+      margin-bottom: 20px;
+    }
+    
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    .success {
+      color: #28a745;
+      font-weight: bold;
+      margin: 20px 0;
+      font-size: 1.2em;
+    }
+    
+    button {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 1em;
+    }
+    
+    button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HidroScanPlus</h1>
+    <p>Esta página de prueba confirma que el despliegue de HidroScanPlus en Vercel está funcionando correctamente.</p>
+    
+    <div class="success">✓ Despliegue confirmado</div>
+    
+    <p>Si puedes ver esta página, el servidor está respondiendo. Ahora debemos asegurarnos de que la aplicación principal también funcione correctamente.</p>
+    
+    <button onclick="window.location.href='/'">Ir a la aplicación principal</button>
+  </div>
+  
+  <script>
+    // Simple script to verify JS execution
+    console.log('Test page loaded successfully');
+    
+    // We can add some basic diagnostics here
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded');
+      
+      // Check for any potential environment issues
+      if (window.location.protocol === 'https:') {
+        console.log('Secure connection ✓');
+      } else {
+        console.warn('Not using HTTPS');
+      }
+    });
+  </script>
+</body>
+</html>
