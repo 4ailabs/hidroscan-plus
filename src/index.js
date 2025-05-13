@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/App';
-import { AppProvider } from './context/AppContext';
+import { AppProvider } from './context/AppContext.jsx';
 import './index.css';
 
 // Using createElement instead of JSX syntax to avoid parsing issues
