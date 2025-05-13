@@ -1,18 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './components/App';
-import { AppProvider } from './context/AppContext.jsx';
-import './index.css';
+// Este archivo es solo un redireccionar a index.jsx para mantener compatibilidad
+// Se recomienda usar directamente index.jsx como punto de entrada
 
-// Using createElement instead of JSX syntax to avoid parsing issues
-ReactDOM.createRoot(document.getElementById('root')).render(
-  React.createElement(
-    React.StrictMode,
-    null,
-    React.createElement(
-      AppProvider,
-      null,
-      React.createElement(App, null)
-    )
-  )
-);
+import './index.jsx';
+
+console.warn('ADVERTENCIA: Se está usando src/index.js, que está obsoleto. Debería cambiarse a usar src/index.jsx directamente.');
