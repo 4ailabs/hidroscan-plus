@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HidroScanPlus Debug</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      #root {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .debug-info {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div class="debug-info">
+      Debug Mode: <span id="timestamp"></span>
+    </div>
+    <script>
+      document.getElementById('timestamp').textContent = new Date().toISOString();
+      
+      // Función para ayudar a depurar problemas
+      window.addEventListener('error', function(event) {
+        console.error('Error capturado:', event.error);
+        document.body.innerHTML += `
+          <div style="color: red; padding: 20px; border: 1px solid red; margin: 20px;">
+            <h3>Error detectado:</h3>
+            <pre>${event.error?.stack || event.message}</pre>
+          </div>
+        `;
+      });
+    </script>
+    <script type="module" src="./src/debug.jsx"></script>
+  </body>
+</html>
