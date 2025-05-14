@@ -60,6 +60,7 @@ const defaultConfig = {
   colorWarning: "#f59e0b",
   colorSuccess: "#16a34a",
   mostrarBarraProgreso: true,
+  mostrarBiomarcadores: true, // Aseguramos que se muestre la sección de biomarcadores
   logoUrl: "logo.svg",
   nombreApp: "HidroScanPlus",
   fontSizeBase: 16,
