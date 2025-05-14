@@ -39,16 +39,29 @@ const SeccionDescripcion = styled.p`
 `;
 
 // Componente de sección
-const Seccion = ({ seccion, respuestas, onRespuestaChange }) => {
+const Seccion = ({ seccion, respuestas, onRespuestaChange, preguntasAdicionales, mostrarRequeridos }) => {
+  // Verificar si se pasaron los datos necesarios
+  if (!seccion) {
+    return <div>Error: No se proporcionaron datos de sección</div>;
+  }
+  
   // Filtrar preguntas que deben mostrarse según condiciones
   const preguntasFiltradas = seccion.preguntas.filter(pregunta => {
     // Si la pregunta tiene una condición para mostrarse, evaluarla
     if (pregunta.mostrarSi) {
-      return pregunta.mostrarSi(respuestas);
+      return pregunta.mostrarSi(respuestas || {});
     }
     // Si no tiene condición, siempre se muestra
     return true;
   });
+  
+  // Obtener preguntas adicionales que pertenecen a esta sección
+  const preguntasAdicionalesFiltradas = Object.values(preguntasAdicionales || {}).filter(
+    pregunta => pregunta.seccionOriginal === seccion.id
+  );
+  
+  // Combinar preguntas regulares y adicionales
+  const todasLasPreguntas = [...preguntasFiltradas, ...preguntasAdicionalesFiltradas];
   
   return (
     <SeccionContainer>
@@ -60,14 +73,19 @@ const Seccion = ({ seccion, respuestas, onRespuestaChange }) => {
         </SeccionInfo>
       </SeccionHeader>
       
-      {preguntasFiltradas.map(pregunta => (
+      {todasLasPreguntas.map(pregunta => (
         <Pregunta
           key={pregunta.id}
           pregunta={pregunta}
-          respuesta={respuestas[pregunta.id]}
+          respuesta={respuestas ? respuestas[pregunta.id] : undefined}
           onChange={valor => onRespuestaChange(pregunta.id, valor)}
+          requerida={mostrarRequeridos && pregunta.requerida}
         />
       ))}
+      
+      {todasLasPreguntas.length === 0 && (
+        <p>No hay preguntas disponibles en esta sección.</p>
+      )}
     </SeccionContainer>
   );
 };
