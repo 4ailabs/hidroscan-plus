@@ -171,7 +171,7 @@ const Cuestionario = ({ navegarA }) => {
       // Solo permitir navegar a secciones anteriores o la actual
       setMostrarRequeridos(false);
       // Implementar la lógica para cambiar directamente a una sección
-      setSeccionActual(indice);
+      cambiarSeccion(indice);
     }
   };
   
