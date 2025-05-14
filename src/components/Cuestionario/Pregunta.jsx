@@ -110,8 +110,8 @@ const InputNumber = styled.input`
   padding: 10px 12px;
   font-size: ${props => props.theme.fonts.baseSize}px;
   border: 1px solid ${props => props.value ? props.theme.colors.primary : '#ccc'};
-  border-radius: ${props => props.theme.borderRadius}px;
-  background-color: ${props => props.theme.colors.temaOscuro ? '#2A2D3A' : 'white'};
+  border-radius: 8px;
+  background-color: white;
   color: ${props => props.theme.colors.text};
   outline: none;
   
@@ -126,8 +126,8 @@ const InputText = styled.input`
   padding: 10px 12px;
   font-size: ${props => props.theme.fonts.baseSize}px;
   border: 1px solid ${props => props.value ? props.theme.colors.primary : '#ccc'};
-  border-radius: ${props => props.theme.borderRadius}px;
-  background-color: ${props => props.theme.colors.temaOscuro ? '#2A2D3A' : 'white'};
+  border-radius: 8px;
+  background-color: white;
   color: ${props => props.theme.colors.text};
   outline: none;
   
@@ -183,9 +183,16 @@ const EscalaFill = styled.div`
   }};
 `;
 
+const MensajeError = styled.div`
+  color: ${props => props.theme.colors.error};
+  margin-top: 5px;
+  font-size: 0.9em;
+`;
+
 // Componente principal de pregunta
-const Pregunta = ({ pregunta, respuesta, onChange, esAdicional = false }) => {
-  const { config } = { config: { temaOscuro: false } }; // En un caso real, esto vendría del contexto
+const Pregunta = ({ pregunta, respuesta, onChange, esAdicional = false, requerida = false }) => {
+  // Config por defecto (fallback si no hay tema)
+  const temaOscuro = false;
   
   // Mostrar descripción científica como tooltip
   const mostrarInfoTooltip = () => {
@@ -196,131 +203,136 @@ const Pregunta = ({ pregunta, respuesta, onChange, esAdicional = false }) => {
   
   // Renderizar el input según el tipo de pregunta
   const renderizarInput = () => {
-    switch (pregunta.tipo) {
-      case 'radio':
-        return (
-          <OpcionesRadio>
-            {pregunta.opciones.map(opcion => (
-              <OpcionRadio
-                key={opcion}
-                onClick={() => onChange(opcion)}
-              >
-                <RadioCircle selected={respuesta === opcion}>
-                  {respuesta === opcion && <RadioInner />}
-                </RadioCircle>
-                <RadioLabel selected={respuesta === opcion}>{opcion}</RadioLabel>
-              </OpcionRadio>
-            ))}
-          </OpcionesRadio>
-        );
-        
-      case 'checkbox':
-        const valoresSeleccionados = Array.isArray(respuesta) ? respuesta : [];
-        
-        return (
-          <OpcionesCheckbox>
-            {pregunta.opciones.map(opcion => {
-              const isSelected = valoresSeleccionados.includes(opcion);
-              
-              return (
-                <OpcionCheckbox
-                  key={opcion}
-                  onClick={() => {
-                    let nuevosValores;
-                    if (!valoresSeleccionados.length) {
-                      nuevosValores = [opcion];
-                    } else if (isSelected) {
-                      nuevosValores = valoresSeleccionados.filter(v => v !== opcion);
-                    } else {
-                      nuevosValores = [...valoresSeleccionados, opcion];
-                    }
-                    onChange(nuevosValores);
-                  }}
-                >
-                  <CheckboxSquare selected={isSelected}>
-                    {isSelected && <CheckboxCheck>✓</CheckboxCheck>}
-                  </CheckboxSquare>
-                  <CheckboxLabel selected={isSelected}>{opcion}</CheckboxLabel>
-                </OpcionCheckbox>
-              );
-            })}
-          </OpcionesCheckbox>
-        );
-        
-      case 'numero':
-        return (
-          <InputNumber
-            type="number"
-            value={respuesta ?? ''}
-            min={pregunta.min}
-            max={pregunta.max}
-            onChange={e => {
-              const rawValue = e.target.value;
-              let procesadoValue;
-              
-              if (rawValue === '') {
-                procesadoValue = undefined;
-              } else {
-                procesadoValue = parseFloat(rawValue);
-                if (pregunta.min !== undefined && procesadoValue < pregunta.min) {
-                  procesadoValue = pregunta.min;
-                }
-                if (pregunta.max !== undefined && procesadoValue > pregunta.max) {
-                  procesadoValue = pregunta.max;
-                }
-                if (isNaN(procesadoValue)) procesadoValue = undefined;
-              }
-              
-              onChange(procesadoValue);
-            }}
-          />
-        );
-        
-      case 'texto':
-        return (
-          <InputText
-            type="text"
-            value={respuesta ?? ''}
-            onChange={e => onChange(e.target.value)}
-          />
-        );
-        
-      case 'escala':
-        return (
-          <OpcionesEscala>
-            {pregunta.opciones.map((opcion, index) => {
-              const isSelected = respuesta === opcion;
-              const nivelEscala = (index / (pregunta.opciones.length - 1)) * 100;
-              
-              return (
-                <OpcionEscala
+    try {
+      switch (pregunta.tipo) {
+        case 'radio':
+          return (
+            <OpcionesRadio>
+              {pregunta.opciones.map(opcion => (
+                <OpcionRadio
                   key={opcion}
                   onClick={() => onChange(opcion)}
                 >
-                  <RadioCircle selected={isSelected}>
-                    {isSelected && <RadioInner />}
+                  <RadioCircle selected={respuesta === opcion}>
+                    {respuesta === opcion && <RadioInner />}
                   </RadioCircle>
-                  <EscalaLabel>
-                    <EscalaText selected={isSelected}>{opcion}</EscalaText>
-                    <EscalaBar>
-                      {isSelected && (
-                        <EscalaFill nivel={nivelEscala} />
-                      )}
-                    </EscalaBar>
-                  </EscalaLabel>
-                </OpcionEscala>
-              );
-            })}
-          </OpcionesEscala>
-        );
-        
-      default:
-        return <p>Tipo de pregunta no soportado: {pregunta.tipo}</p>;
+                  <RadioLabel selected={respuesta === opcion}>{opcion}</RadioLabel>
+                </OpcionRadio>
+              ))}
+            </OpcionesRadio>
+          );
+          
+        case 'checkbox':
+          const valoresSeleccionados = Array.isArray(respuesta) ? respuesta : [];
+          
+          return (
+            <OpcionesCheckbox>
+              {pregunta.opciones.map(opcion => {
+                const isSelected = valoresSeleccionados.includes(opcion);
+                
+                return (
+                  <OpcionCheckbox
+                    key={opcion}
+                    onClick={() => {
+                      let nuevosValores;
+                      if (!valoresSeleccionados.length) {
+                        nuevosValores = [opcion];
+                      } else if (isSelected) {
+                        nuevosValores = valoresSeleccionados.filter(v => v !== opcion);
+                      } else {
+                        nuevosValores = [...valoresSeleccionados, opcion];
+                      }
+                      onChange(nuevosValores);
+                    }}
+                  >
+                    <CheckboxSquare selected={isSelected}>
+                      {isSelected && <CheckboxCheck>✓</CheckboxCheck>}
+                    </CheckboxSquare>
+                    <CheckboxLabel selected={isSelected}>{opcion}</CheckboxLabel>
+                  </OpcionCheckbox>
+                );
+              })}
+            </OpcionesCheckbox>
+          );
+          
+        case 'numero':
+          return (
+            <InputNumber
+              type="number"
+              value={respuesta ?? ''}
+              min={pregunta.min}
+              max={pregunta.max}
+              onChange={e => {
+                const rawValue = e.target.value;
+                let procesadoValue;
+                
+                if (rawValue === '') {
+                  procesadoValue = undefined;
+                } else {
+                  procesadoValue = parseFloat(rawValue);
+                  if (pregunta.min !== undefined && procesadoValue < pregunta.min) {
+                    procesadoValue = pregunta.min;
+                  }
+                  if (pregunta.max !== undefined && procesadoValue > pregunta.max) {
+                    procesadoValue = pregunta.max;
+                  }
+                  if (isNaN(procesadoValue)) procesadoValue = undefined;
+                }
+                
+                onChange(procesadoValue);
+              }}
+            />
+          );
+          
+        case 'texto':
+          return (
+            <InputText
+              type="text"
+              value={respuesta ?? ''}
+              onChange={e => onChange(e.target.value)}
+            />
+          );
+          
+        case 'escala':
+          return (
+            <OpcionesEscala>
+              {pregunta.opciones.map((opcion, index) => {
+                const isSelected = respuesta === opcion;
+                const nivelEscala = (index / (pregunta.opciones.length - 1)) * 100;
+                
+                return (
+                  <OpcionEscala
+                    key={opcion}
+                    onClick={() => onChange(opcion)}
+                  >
+                    <RadioCircle selected={isSelected}>
+                      {isSelected && <RadioInner />}
+                    </RadioCircle>
+                    <EscalaLabel>
+                      <EscalaText selected={isSelected}>{opcion}</EscalaText>
+                      <EscalaBar>
+                        {isSelected && (
+                          <EscalaFill nivel={nivelEscala} />
+                        )}
+                      </EscalaBar>
+                    </EscalaLabel>
+                  </OpcionEscala>
+                );
+              })}
+            </OpcionesEscala>
+          );
+          
+        default:
+          return <p>Tipo de pregunta no soportado: {pregunta.tipo}</p>;
+      }
+    } catch (error) {
+      console.error("Error al renderizar input:", error);
+      return <p>Ocurrió un error al mostrar esta pregunta. Por favor, intenta nuevamente.</p>;
     }
   };
   
   return (
-    <PreguntaContainer esAdicional={esAdicional} temaOscuro={config.temaOscuro}>
+    <PreguntaContainer esAdicional={esAdicional} temaOscuro={temaOscuro}>
       <PreguntaHeader>
         <PreguntaLabel htmlFor={pregunta.id}>{pregunta.texto}</PreguntaLabel>
         {pregunta.descripcionCientifica && (
@@ -328,6 +340,9 @@ const Pregunta = ({ pregunta, respuesta, onChange, esAdicional = false }) => {
         )}
       </PreguntaHeader>
       {renderizarInput()}
+      {requerida && !respuesta && (
+        <MensajeError>Esta pregunta es requerida</MensajeError>
+      )}
     </PreguntaContainer>
   );
 };
