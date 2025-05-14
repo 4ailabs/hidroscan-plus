@@ -1155,4 +1155,3 @@ export const SECCIONES_CUESTIONARIO = [
 ];
 
 export default SECCIONES_CUESTIONARIO;
-
