@@ -82,6 +82,52 @@ export const SECCIONES_CUESTIONARIO = [
         mostrarSi: (r) =>
           r.genero === "Femenino" && r.edad >= 15 && r.edad <= 50,
         descripcionCientifica: "Embarazo/lactancia aumentan requerimientos de folato, B12, B6, C. Deficiencias pueden tener consecuencias.",
+      },
+      {
+        id: "trimestre_embarazo",
+        texto: "¿En qué trimestre de embarazo se encuentra?",
+        tipo: "radio",
+        opciones: [
+          "Primer trimestre",
+          "Segundo trimestre",
+          "Tercer trimestre",
+        ],
+        mostrarSi: (r) =>
+          r.embarazo === "Embarazada" ||
+          r.embarazo === "Embarazada y lactancia",
+        descripcionCientifica:
+          "Requerimientos varían por trimestre. Folato crítico en primer trimestre.",
+      },
+      {
+        id: "altura",
+        texto: "¿Cuál es su altura? (cm)",
+        tipo: "numero",
+        min: 0,
+        max: 250,
+        descripcionCientifica:
+          "Altura y peso para IMC. Bajo peso aumenta riesgo, obesidad puede asociarse a deficiencias específicas.",
+      },
+      {
+        id: "peso",
+        texto: "¿Cuál es su peso? (kg)",
+        tipo: "numero",
+        min: 3,
+        max: 300,
+        descripcionCientifica:
+          "Peso y altura para IMC. Importante para estimar requerimientos energéticos y nutricionales.",
+      },
+      {
+        id: "perdida_peso",
+        texto: "¿Ha perdido peso involuntariamente en los últimos 3 meses?",
+        tipo: "radio",
+        opciones: [
+          "No",
+          "Sí, menos del 5% de mi peso",
+          "Sí, entre 5-10% de mi peso",
+          "Sí, más del 10% de mi peso",
+        ],
+        descripcionCientifica:
+          "Pérdida de peso involuntaria puede indicar malabsorción o ingesta insuficiente. >10% en 3 meses es significativo.",
       }
     ],
   },
