@@ -41,7 +41,48 @@ export const SECCIONES_CUESTIONARIO = [
         ],
         descripcionCientifica: "Patrón alimentario afecta riesgo. Dietas veganas requieren suplemento B12, restrictivas pueden reducir ingesta global.",
       },
-      // Más preguntas...
+      {
+        id: "alimentacion_otra",
+        texto: "Por favor, especifique su tipo de alimentación:",
+        tipo: "texto",
+        mostrarSi: (r) => r.alimentacion === "Otra",
+        descripcionCientifica: "Dietas específicas (cetogénica, paleo) pueden afectar perfil de micronutrientes.",
+      },
+      {
+        id: "duracion_dieta",
+        texto: "¿Cuánto tiempo lleva siguiendo esta alimentación?",
+        tipo: "radio",
+        opciones: [
+          "Menos de 1 mes",
+          "1-6 meses",
+          "6-12 meses",
+          "1-5 años",
+          "Más de 5 años",
+        ],
+        mostrarSi: (r) =>
+          [
+            "Vegetariana (sin carne ni pescado)",
+            "Vegana (ningún producto animal)",
+            "Restrictiva (dieta baja en calorías/ayuno)",
+            "Otra",
+          ].includes(r.alimentacion),
+        descripcionCientifica: "Duración de dieta restrictiva influye en riesgo. Reservas de B12 duran años, otras (C) se agotan en meses.",
+      },
+      {
+        id: "embarazo",
+        texto: "¿Está embarazada o en período de lactancia?",
+        tipo: "radio",
+        opciones: [
+          "No aplica",
+          "No",
+          "Embarazada",
+          "Período de lactancia",
+          "Embarazada y lactancia",
+        ],
+        mostrarSi: (r) =>
+          r.genero === "Femenino" && r.edad >= 15 && r.edad <= 50,
+        descripcionCientifica: "Embarazo/lactancia aumentan requerimientos de folato, B12, B6, C. Deficiencias pueden tener consecuencias.",
+      }
     ],
   },
   {
@@ -64,7 +105,51 @@ export const SECCIONES_CUESTIONARIO = [
         nutrientes: ["B1", "B2", "B3", "B5", "B6", "B9", "B12", "C"],
         descripcionCientifica: "Fatiga es síntoma inespecífico pero frecuente en deficiencias de complejo B (producción de energía).",
       },
-      // Más preguntas...
+      {
+        id: "fatiga_hora",
+        texto: "¿En qué momento del día la fatiga es más intensa?",
+        tipo: "radio",
+        opciones: [
+          "Por la mañana, al despertar",
+          "A media mañana",
+          "Después de comer (postprandial)",
+          "Por la tarde",
+          "Todo el día, sin variación clara",
+        ],
+        mostrarSi: (r) =>
+          r.fatiga &&
+          ["A veces", "Frecuentemente", "Siempre"].includes(r.fatiga),
+        nutrientes: ["B1", "B12"],
+        descripcionCientifica: "Fatiga postprandial sugiere B1, matutina persistente B12 o anemias.",
+      },
+      {
+        id: "irritabilidad",
+        texto: "¿Se siente irritable, ansioso/a o con cambios de humor sin motivo aparente?",
+        tipo: "escala",
+        opciones: [
+          "Nunca",
+          "Raramente",
+          "A veces",
+          "Frecuentemente",
+          "Siempre",
+        ],
+        nutrientes: ["B1", "B6", "B9", "B12"],
+        descripcionCientifica: "B6, B9, B12 involucradas en síntesis de neurotransmisores del estado de ánimo.",
+      },
+      {
+        id: "concentracion",
+        texto: "¿Tiene dificultad para concentrarse o problemas de memoria?",
+        tipo: "escala",
+        opciones: [
+          "Nunca",
+          "Raramente",
+          "A veces",
+          "Frecuentemente",
+          "Siempre",
+        ],
+        nutrientes: ["B1", "B3", "B6", "B12"],
+        descripcionCientifica: "B1, B3, B6, B12 esenciales para función cognitiva. B12 particularmente importante.",
+      }
     ],
   },
   {
@@ -87,7 +172,35 @@ export const SECCIONES_CUESTIONARIO = [
         nutrientes: ["B1", "B6", "B12"],
         descripcionCientifica: "Síntomas neuropáticos tienen alta especificidad para B1, B6, B12. Patrón 'guante y calcetín'.",
       },
-      // Más preguntas...
+      {
+        id: "problemas_piel",
+        texto: "¿Ha notado problemas en la piel como dermatitis, descamación o erupciones?",
+        tipo: "escala",
+        opciones: [
+          "No",
+          "Ligeramente",
+          "Moderadamente",
+          "Bastante",
+          "Mucho",
+        ],
+        nutrientes: ["B2", "B3", "B6", "B7"],
+        descripcionCientifica: "Manifestaciones dermatológicas características de B2, B3, B6, B7.",
+      },
+      {
+        id: "tipo_problemas_piel",
+        texto: "¿Qué tipo de problemas de piel ha notado principalmente?",
+        tipo: "checkbox",
+        opciones: [
+          "Descamación o piel seca",
+          "Erupciones o manchas rojas",
+          "Dermatitis seborreica (escamas grasientas)",
+          "Lesiones en zonas expuestas al sol",
+          "Mala cicatrización",
+        ],
+        mostrarSi: (r) => r.problemas_piel && r.problemas_piel !== "No",
+        nutrientes: ["B2", "B3", "B6", "B7", "C"],
+        descripcionCientifica: "Dermatitis seborreica (B2,B6), lesiones fotoexpuestas (B3), descamación (B7), mala cicatrización (C).",
+      }
     ],
   },
   {
@@ -110,7 +223,28 @@ export const SECCIONES_CUESTIONARIO = [
         nutrientes: ["B1", "B6", "B9", "B12"],
         descripcionCientifica: "Alcohol interfiere con absorción y metabolismo de vitaminas B, especialmente tiamina (B1).",
       },
-      // Más preguntas...
+      {
+        id: "cantidad_alcohol",
+        texto: "En un día típico de consumo, ¿cuántas unidades de alcohol consume? (1 unidad = 1 cerveza pequeña, 1 copa de vino o 1 medida de licor)",
+        tipo: "radio",
+        opciones: [
+          "1-2 unidades",
+          "3-4 unidades",
+          "5-6 unidades",
+          "Más de 6 unidades",
+        ],
+        mostrarSi: (r) => r.alcohol && r.alcohol !== "Nunca",
+        nutrientes: ["B1", "B6", "B9", "B12"],
+        descripcionCientifica: "Consumos >4 unidades/día (H) y >3 (M) aumentan riesgo.",
+      },
+      {
+        id: "estres",
+        texto: "¿Cuál es su nivel habitual de estrés?",
+        tipo: "escala",
+        opciones: ["Muy bajo", "Bajo", "Moderado", "Alto", "Muy alto"],
+        nutrientes: ["B5", "B6", "B9", "C"],
+        descripcionCientifica: "Estrés crónico aumenta utilización de B5, B6, C.",
+      }
     ],
   },
   {
@@ -136,7 +270,41 @@ export const SECCIONES_CUESTIONARIO = [
           r.alimentacion !== "Vegetariana (sin carne ni pescado)",
         descripcionCientifica: "Carnes son fuentes principales de B12, B1, B3, B6. Hígado muy rico.",
       },
-      // Más preguntas...
+      {
+        id: "tipo_carne",
+        texto: "¿Qué tipo de carne consume con mayor frecuencia?",
+        tipo: "radio",
+        opciones: [
+          "Principalmente carne roja (res, cordero)",
+          "Principalmente carne blanca (pollo, pavo)",
+          "Ambas por igual",
+          "Principalmente vísceras (hígado, riñones)",
+        ],
+        mostrarSi: (r) =>
+          r.carnes &&
+          r.carnes !== "Nunca" &&
+          r.alimentacion !== "Vegana (ningún producto animal)" &&
+          r.alimentacion !== "Vegetariana (sin carne ni pescado)",
+        nutrientes: ["B1", "B2", "B3", "B12"],
+        descripcionCientifica: "Vísceras (hígado) muy ricas en B12. Roja más B12/hierro, aves más niacina.",
+      },
+      {
+        id: "pescados",
+        texto: "¿Con qué frecuencia consume pescado o mariscos?",
+        tipo: "escala",
+        opciones: [
+          "Nunca",
+          "1-2 veces/mes",
+          "1-2 veces/semana",
+          "3-4 veces/semana",
+          "Diariamente",
+        ],
+        nutrientes: ["B1", "B3", "B6", "B12"],
+        mostrarSi: (r) =>
+          r.alimentacion !== "Vegana (ningún producto animal)" &&
+          r.alimentacion !== "Vegetariana (sin carne ni pescado)",
+        descripcionCientifica: "Pescados grasos (salmón, sardinas) excelentes fuentes de B12 y niacina. Mariscos (almejas) muy ricos en B12.",
+      }
     ],
   },
   {
@@ -159,7 +327,27 @@ export const SECCIONES_CUESTIONARIO = [
         descripcionCientifica:
           "Multivitamínicos aportan vitaminas. Formas activas (metilcobalamina, 5-MTHF) más biodisponibles.",
       },
-      // Más preguntas...
+      {
+        id: "marca_multivitaminico", 
+        texto: "Si recuerda la marca o nombre del multivitamínico, indíquelo aquí:",
+        tipo: "texto",
+        mostrarSi: (r) => r.multivitaminico && r.multivitaminico !== "No",
+        descripcionCientifica: "Composición varía. Conocer producto permite evaluación precisa."
+      },
+      {
+        id: "suplementos_b",
+        texto: "¿Toma algún suplemento específico de vitaminas del complejo B?",
+        tipo: "checkbox",
+        opciones: [
+          "B12 (cobalamina/metilcobalamina)",
+          "B9 (ácido fólico/metilfolato)",
+          "B6 (piridoxina)",
+          "B1 (tiamina)",
+          "Complejo B (mezcla)",
+          "Ninguno",
+        ],
+        descripcionCientifica: "Suplementos específicos necesarios en ciertos casos (veganos B12, embarazadas folato)."
+      }
     ],
   },
   {
@@ -177,7 +365,22 @@ export const SECCIONES_CUESTIONARIO = [
         nutrientes: ["B12"],
         descripcionCientifica: "Nivel sérico de B12. Valores <200 pg/mL indican deficiencia. Óptimo >400 pg/mL.",
       },
-      // Más preguntas...
+      {
+        id: "folato_serico_input",
+        texto: "Folato sérico (ng/mL o nmol/L)",
+        tipo: "numero",
+        min: 0,
+        nutrientes: ["B9"],
+        descripcionCientifica: "Nivel sérico de folato. Valores <3-4 ng/mL indican deficiencia."
+      },
+      {
+        id: "homocisteina_input",
+        texto: "Homocisteína plasmática (μmol/L)",
+        tipo: "numero",
+        min: 0,
+        nutrientes: ["B12", "B9", "B6"],
+        descripcionCientifica: "Elevada en deficiencia de B12, B9, B6. Óptimo <10 μmol/L."
+      }
     ],
   },
 ];
