@@ -111,6 +111,31 @@ const App = () => {
     return Math.pow(valorFrecuencia, 0.7) * intensidadEfecto;
   };
   
+  // Función para calcular el IMC
+  const calcularIMC = (peso, altura) => {
+    if (!peso || !altura || peso <= 0 || altura <= 0) return null;
+    const alturaMetros = altura / 100;
+    const imc = peso / (alturaMetros * alturaMetros);
+    return imc;
+  };
+
+  // Función para obtener categoría de IMC
+  const obtenerCategoriaIMC = (imc) => {
+    if (!imc) return null;
+    let categoria = { nombre: "normal", riesgo: "bajo" };
+    
+    if (imc < 18.5) {
+      categoria = { nombre: "bajo peso", riesgo: "moderado" };
+    } else if (imc >= 25) {
+      categoria = { nombre: "sobrepeso", riesgo: "moderado" };
+    }
+    if (imc >= 30) {
+      categoria = { nombre: "obesidad", riesgo: "alto" };
+    }
+    
+    return categoria;
+  };
+  
   // Función principal para calcular los resultados
   const calcularResultados = (respuestasUsuario) => {
     const resultados = {};
@@ -119,6 +144,18 @@ const App = () => {
     Object.keys(NUTRIENTES_INFO).forEach(nutrienteKey => {
       const infoNutriente = NUTRIENTES_INFO[nutrienteKey];
       let puntajeBase = 0;
+      
+      // Evaluar IMC si tenemos datos de peso y altura
+      let categoriaIMC = null;
+      if (respuestasUsuario.peso && respuestasUsuario.altura) {
+        const imc = calcularIMC(respuestasUsuario.peso, respuestasUsuario.altura);
+        categoriaIMC = obtenerCategoriaIMC(imc);
+        
+        // Bajo peso aumenta ligeramente el riesgo basal para todos los nutrientes
+        if (categoriaIMC && categoriaIMC.nombre === "bajo peso") {
+          puntajeBase += 0.8;
+        }
+      }
       
       // Factores base según perfil de usuario
       switch (nutrienteKey) {
@@ -133,6 +170,12 @@ const App = () => {
           if (respuestasUsuario.edad && respuestasUsuario.edad > 65) {
             puntajeBase += 2;
           }
+          
+          // Añadir consideración de pérdida de peso para B12
+          if (respuestasUsuario.perdida_peso && 
+              ["Sí, entre 5-10% de mi peso", "Sí, más del 10% de mi peso"].includes(respuestasUsuario.perdida_peso)) {
+            puntajeBase += 1.5;
+          }
           break;
           
         case 'B9':
@@ -140,6 +183,11 @@ const App = () => {
           if (respuestasUsuario.embarazo === "Embarazada" || 
               respuestasUsuario.embarazo === "Embarazada y lactancia") {
             puntajeBase += 3;
+            
+            // Añadir consideración de trimestre para B9
+            if (respuestasUsuario.trimestre_embarazo === "Primer trimestre") {
+              puntajeBase += 1.5; // Mayor riesgo en primer trimestre
+            }
           }
           break;
           
@@ -147,6 +195,11 @@ const App = () => {
           // Mayor riesgo en fumadores
           if (respuestasUsuario.tabaco === "Fumador") {
             puntajeBase += 2;
+          }
+          
+          // Mayor riesgo con pérdida de peso rápida
+          if (respuestasUsuario.perdida_peso === "Sí, más del 10% de mi peso") {
+            puntajeBase += 1.2;
           }
           break;
           
