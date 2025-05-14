@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { useApp } from '../context/AppContext';
 import GlobalStyles from '../styles/globalStyles';
 import { theme, darkTheme } from '../styles/theme';
 import PantallaInicio from './PantallaInicio';
-import Cuestionario from './Cuestionario'; // Importamos el nuevo componente
+import Cuestionario from './Cuestionario';
+import ResultadosVitaminas from './ResultadosVitaminas';
+import { NUTRIENTES_INFO } from '../data/nutrientesInfo';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -67,30 +68,198 @@ const defaultConfig = {
 };
 
 const App = () => {
-  // Estado local para gestionar la navegación sin depender del contexto
-  const [currentScreen, setCurrentScreen] = React.useState('inicio');
+  // Estados principales
+  const [pantallaActual, setPantallaActual] = useState('inicio');
+  const [respuestas, setRespuestas] = useState({});
+  const [resultados, setResultados] = useState(null);
+  const [config, setConfig] = useState(defaultConfig);
   
-  // Manejamos el caso donde el contexto no está disponible
-  let pantallaActual = currentScreen;
-  let config = defaultConfig;
-  
-  try {
-    // Intentamos usar el contexto, pero podría fallar durante la hidratación
-    const context = useApp();
-    if (context) {
-      pantallaActual = context.pantallaActual || currentScreen;
-      config = context.config || defaultConfig;
-      
-      // Sobrescribimos la función navegarA para que use nuestro estado local
-      context.navegarA = (screen) => {
-        console.log("Navegando a:", screen);
-        setCurrentScreen(screen);
-      };
+  // Función para navegar entre pantallas
+  const navegarA = (pantalla, data) => {
+    console.log("Navegando a:", pantalla, data);
+    
+    if (pantalla === 'resultados' && data?.respuestas) {
+      // Calculamos los resultados antes de cambiar de pantalla
+      const resultadosCalculados = calcularResultados(data.respuestas);
+      setRespuestas(data.respuestas);
+      setResultados(resultadosCalculados);
     }
-  } catch (error) {
-    console.error("Error al acceder al contexto:", error);
-    // Continuamos con los valores por defecto
-  }
+    
+    setPantallaActual(pantalla);
+  };
+  
+  // Función para evaluar la intensidad de síntomas
+  const evaluarIntensidadSintoma = (respuesta, escala = ["Nunca", "Raramente", "A veces", "Frecuentemente", "Siempre"]) => {
+    if (!respuesta) return 0;
+    const indice = escala.indexOf(respuesta);
+    if (indice <= 0) return 0;
+    return (1 / (1 + Math.exp(-1.5 * (indice - 2)))) * 2 - 0.3;
+  };
+
+  // Función para calcular protección nutricional
+  const calcularProteccionNutricional = (frecuencia, intensidadEfecto = 1.0) => {
+    if (!frecuencia) return 0;
+    const frecuenciaValores = {
+      "Nunca": 0,
+      "1-2 veces/mes": 0.15,
+      "1-2 veces/semana": 0.3,
+      "3-4 veces/semana": 0.6,
+      "Diariamente": 1.0,
+    };
+    const valorFrecuencia = frecuenciaValores[frecuencia] || 0;
+    if (valorFrecuencia <= 0) return 0;
+    return Math.pow(valorFrecuencia, 0.7) * intensidadEfecto;
+  };
+  
+  // Función principal para calcular los resultados
+  const calcularResultados = (respuestasUsuario) => {
+    const resultados = {};
+    
+    // Para cada nutriente, calculamos su puntaje
+    Object.keys(NUTRIENTES_INFO).forEach(nutrienteKey => {
+      const infoNutriente = NUTRIENTES_INFO[nutrienteKey];
+      let puntajeBase = 0;
+      
+      // Factores base según perfil de usuario
+      switch (nutrienteKey) {
+        case 'B12':
+          // Mayor riesgo en veganos/vegetarianos
+          if (respuestasUsuario.alimentacion === "Vegana (ningún producto animal)") {
+            puntajeBase += 6;
+          } else if (respuestasUsuario.alimentacion === "Vegetariana (sin carne ni pescado)") {
+            puntajeBase += 3.5;
+          }
+          // Mayor riesgo en adultos mayores
+          if (respuestasUsuario.edad && respuestasUsuario.edad > 65) {
+            puntajeBase += 2;
+          }
+          break;
+          
+        case 'B9':
+          // Mayor riesgo en embarazadas
+          if (respuestasUsuario.embarazo === "Embarazada" || 
+              respuestasUsuario.embarazo === "Embarazada y lactancia") {
+            puntajeBase += 3;
+          }
+          break;
+          
+        case 'C':
+          // Mayor riesgo en fumadores
+          if (respuestasUsuario.tabaco === "Fumador") {
+            puntajeBase += 2;
+          }
+          break;
+          
+        // Para los demás nutrientes, comenzamos con un puntaje base bajo
+        default:
+          puntajeBase += 1;
+      }
+      
+      // Evaluamos síntomas relacionados con este nutriente
+      let puntajeSintomas = 0;
+      let contadorSintomas = 0;
+      
+      // Recorremos las respuestas buscando síntomas relacionados
+      Object.keys(respuestasUsuario).forEach(preguntaId => {
+        // Evaluamos síntomas de escala
+        if (
+          respuestasUsuario[preguntaId] && 
+          ["A veces", "Frecuentemente", "Siempre"].includes(respuestasUsuario[preguntaId])
+        ) {
+          // Buscamos la pregunta en las secciones
+          const seccionesConPregunta = [
+            "sintomas_generales",
+            "sintomas_especificos"
+          ];
+          
+          // Simplificado para este ejemplo
+          const esRelevante = preguntaId.includes('fatiga') || 
+                             preguntaId.includes('debilidad') || 
+                             preguntaId.includes('hormigueo') || 
+                             preguntaId.includes('mareos');
+                             
+          if (esRelevante) {
+            const intensidad = evaluarIntensidadSintoma(respuestasUsuario[preguntaId]);
+            puntajeSintomas += intensidad * 2; // Multiplicador general
+            contadorSintomas++;
+          }
+        }
+      });
+      
+      // Evaluamos factores de protección (consumo de alimentos ricos en este nutriente)
+      let proteccionNutricional = 0;
+      
+      // Alimentos específicos para cada nutriente
+      switch (nutrienteKey) {
+        case 'B12':
+          if (respuestasUsuario.carnes) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.carnes, 1.5);
+          }
+          if (respuestasUsuario.pescados) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.pescados, 1.3);
+          }
+          if (respuestasUsuario.lacteos) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.lacteos, 1.0);
+          }
+          if (respuestasUsuario.huevos) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.huevos, 0.8);
+          }
+          break;
+          
+        case 'B9':
+          if (respuestasUsuario.verduras) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.verduras, 1.5);
+          }
+          if (respuestasUsuario.legumbres) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.legumbres, 1.3);
+          }
+          break;
+          
+        case 'C':
+          if (respuestasUsuario.citricos) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.citricos, 1.8);
+          }
+          if (respuestasUsuario.verduras) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.verduras, 1.0);
+          }
+          break;
+          
+        // Para los demás nutrientes, aplicamos factores genéricos
+        default:
+          if (respuestasUsuario.verduras) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.verduras, 0.7);
+          }
+          if (respuestasUsuario.frutas) {
+            proteccionNutricional += calcularProteccionNutricional(respuestasUsuario.frutas, 0.5);
+          }
+      }
+      
+      // Evaluamos suplementación
+      if (respuestasUsuario.multivitaminico && respuestasUsuario.multivitaminico !== "No") {
+        proteccionNutricional += 1.5;
+      }
+      
+      // Si toma suplementos específicos de este nutriente
+      if (nutrienteKey === 'B12' && respuestasUsuario.suplementos_b && 
+          respuestasUsuario.suplementos_b.includes("B12 (cobalamina/metilcobalamina)")) {
+        proteccionNutricional += 3;
+      }
+      
+      // Calculamos puntaje final
+      let puntajeFinal = puntajeBase + (puntajeSintomas / Math.max(1, contadorSintomas)) - proteccionNutricional;
+      
+      // Normalizamos entre 0 y 10
+      puntajeFinal = Math.max(0, Math.min(10, puntajeFinal));
+      
+      // Aplicamos ponderación según importancia del nutriente
+      puntajeFinal = puntajeFinal * (infoNutriente.ponderacionTotal || 1.0);
+      
+      // Guardamos el resultado
+      resultados[nutrienteKey] = parseFloat(puntajeFinal.toFixed(1));
+    });
+    
+    return resultados;
+  };
   
   // Combinar tema base con configuración personalizada
   const temaCompleto = {
@@ -111,24 +280,15 @@ const App = () => {
     },
   };
   
-  // Función local para navegación
-  const navegarA = (screen) => {
-    console.log("Navegando a:", screen);
-    setCurrentScreen(screen);
-  };
-  
-  // Renderizar la pantalla actual basada en el estado
+  // Renderizar la pantalla actual
   const renderizarPantallaActual = () => {
-    console.log("Renderizando pantalla:", currentScreen);
-    
-    switch (currentScreen) {
+    switch (pantallaActual) {
       case 'inicio':
         return <PantallaInicio navegarA={navegarA} />;
       case 'cuestionario':
         return <Cuestionario navegarA={navegarA} />;
       case 'resultados':
-        // Temporalmente retornamos un mensaje hasta implementar el componente
-        return <div style={{ padding: 20, textAlign: 'center' }}>Componente de Resultados (por implementar)</div>;
+        return <ResultadosVitaminas resultados={resultados} navegarA={navegarA} />;
       default:
         return <PantallaInicio navegarA={navegarA} />;
     }
