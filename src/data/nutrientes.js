@@ -37,41 +37,124 @@ export const NUTRIENTES_INFO = {
     },
     // Datos adicionales irían aquí
   },
-  // Información adicional sobre otras vitaminas hidrosolubles
   B3: {
     nombre: "Vitamina B3 (Niacina)",
+    nombreCientifico: "Nicotinamida adenina dinucleótido (NAD), Nicotinamida adenina dinucleótido fosfato (NADP)",
+    fuentes: "Carnes (pollo, pavo, cerdo), pescado (atún, salmón), cacahuetes, cereales enriquecidos, champiñones",
+    deficiencia: "Pelagra (dermatitis, diarrea, demencia), glositis, estomatitis, fatiga, depresión",
     imagen: "🍄",
-    // Más información
+    descripcion: "Esencial para más de 400 enzimas, implicada en metabolismo energético, reparación del ADN y señalización celular.",
+    RDA: {
+      infantil: "6-8 mg NE/día",
+      adolescentes: "12-16 mg NE/día",
+      adultos: "Hombres: 16 mg NE/día, Mujeres: 14 mg NE/día",
+      embarazo: "18 mg NE/día",
+      lactancia: "17 mg NE/día",
+      mayores65: "16 mg NE/día",
+    },
+    ponderacionTotal: 1.7,
   },
   B5: {
     nombre: "Vitamina B5 (Ácido Pantoténico)",
+    nombreCientifico: "Coenzima A (CoA)",
+    fuentes: "Amplia distribución: hígado, riñón, pollo, ternera, huevos, brócoli, aguacate, cereales integrales",
+    deficiencia: "Rara, pero puede incluir fatiga, insomnio, parestesias ('síndrome de los pies ardientes'), irritabilidad, vómitos.",
     imagen: "🥑",
-    // Más información
+    descripcion: "Componente esencial de la Coenzima A (CoA), crucial para el metabolismo de carbohidratos, grasas y proteínas, y la síntesis de ácidos grasos, colesterol y hormonas esteroideas.",
+    RDA: {
+      infantil: "1.7-3 mg/día",
+      adolescentes: "4-5 mg/día",
+      adultos: "5 mg/día",
+      embarazo: "6 mg/día",
+      lactancia: "7 mg/día",
+      mayores65: "5 mg/día",
+    },
+    ponderacionTotal: 1.1,
   },
   B6: {
     nombre: "Vitamina B6 (Piridoxina)",
+    nombreCientifico: "Piridoxal 5'-fosfato (PLP), Piridoxamina, Piridoxina",
+    fuentes: "Garbanzos, hígado, atún, salmón, pollo, patatas, plátanos, cereales fortificados",
+    deficiencia: "Dermatitis seborreica, glositis, queilosis, confusión, depresión, convulsiones, anemia microcítica",
     imagen: "🍌",
-    // Más información
+    descripcion: "Coenzima para más de 100 enzimas, implicada en el metabolismo de aminoácidos, neurotransmisores, glucógeno y síntesis de hemo.",
+    RDA: {
+      infantil: "0.5-0.6 mg/día",
+      adolescentes: "1.0-1.3 mg/día",
+      adultos: "Hombres/Mujeres (19-50): 1.3 mg/día; Hombres (>50): 1.7 mg/día; Mujeres (>50): 1.5 mg/día",
+      embarazo: "1.9 mg/día",
+      lactancia: "2.0 mg/día",
+      mayores65: "H: 1.7 mg/d, M: 1.5 mg/d",
+    },
+    ponderacionTotal: 1.5,
   },
   B7: {
     nombre: "Vitamina B7 (Biotina)",
+    nombreCientifico: "Biotina, Coenzima R",
+    fuentes: "Hígado, yema de huevo, salmón, cerdo, aguacate, nueces, semillas, levadura",
+    deficiencia: "Rara, pero incluye dermatitis (especialmente periorificial), alopecia, conjuntivitis, síntomas neurológicos (depresión, letargo, alucinaciones, parestesias).",
     imagen: "🥚",
-    // Más información
+    descripcion: "Cofactor para carboxilasas esenciales en el metabolismo de grasas, carbohidratos y aminoácidos, y en la gluconeogénesis.",
+    RDA: {
+      infantil: "6-12 µg/día",
+      adolescentes: "20-25 µg/día",
+      adultos: "30 µg/día",
+      embarazo: "30 µg/día",
+      lactancia: "35 µg/día",
+      mayores65: "30 µg/día",
+    },
+    ponderacionTotal: 1.3,
   },
   B9: {
     nombre: "Vitamina B9 (Ácido Fólico)",
+    nombreCientifico: "Tetrahidrofolato (THF), 5-metiltetrahidrofolato (5-MTHF)",
+    fuentes: "Vegetales de hoja verde (espinacas, kale), legumbres, espárragos, brócoli, aguacate, frutas cítricas, hígado, cereales fortificados",
+    deficiencia: "Anemia megaloblástica, glositis, diarrea, fatiga, irritabilidad, defectos del tubo neural en recién nacidos.",
     imagen: "🥬",
-    // Más información
+    descripcion: "Esencial para la síntesis de ADN y ARN, metilación, metabolismo de aminoácidos (especialmente homocisteína) y división celular.",
+    RDA: {
+      infantil: "150-200 µg DFE/día",
+      adolescentes: "300-400 µg DFE/día",
+      adultos: "400 µg DFE/día",
+      embarazo: "600 µg DFE/día",
+      lactancia: "500 µg DFE/día",
+      mayores65: "400 µg DFE/día",
+    },
+    ponderacionTotal: 1.8,
   },
   B12: {
     nombre: "Vitamina B12 (Cobalamina)",
+    nombreCientifico: "Metilcobalamina, Adenosilcobalamina",
+    fuentes: "Exclusivamente de origen animal: carnes, pescado, huevos, lácteos, mariscos. Alimentos fortificados.",
+    deficiencia: "Anemia megaloblástica, neuropatía periférica, degeneración combinada subaguda de la médula espinal, fatiga, glositis, deterioro cognitivo, depresión.",
     imagen: "🥩",
-    // Más información
+    descripcion: "Esencial para la síntesis de ADN, función neurológica, formación de glóbulos rojos y metabolismo de grasas y proteínas (vía metilmalonil-CoA).",
+    RDA: {
+      infantil: "0.9-1.2 µg/día",
+      adolescentes: "1.8-2.4 µg/día",
+      adultos: "2.4 µg/día",
+      embarazo: "2.6 µg/día",
+      lactancia: "2.8 µg/día",
+      mayores65: "2.4 µg/día (a menudo se recomienda suplemento o alimentos fortificados)",
+    },
+    ponderacionTotal: 1.9,
   },
   C: {
     nombre: "Vitamina C (Ácido Ascórbico)",
+    nombreCientifico: "L-Ácido ascórbico, Ascorbato",
+    fuentes: "Frutas cítricas, kiwi, pimientos, brócoli, fresas, tomates, patatas",
+    deficiencia: "Escorbuto (sangrado gingival, petequias, equimosis, hiperqueratosis folicular), debilidad, dolor articular, cicatrización deficiente, anemia.",
     imagen: "🍊",
-    // Más información
+    descripcion: "Potente antioxidante, esencial para síntesis de colágeno, carnitina y neurotransmisores, metabolismo de aminoácidos, absorción de hierro no hemo y función inmune.",
+    RDA: {
+      infantil: "15-25 mg/día",
+      adolescentes: "45-75 mg/día",
+      adultos: "Hombres: 90 mg/día, Mujeres: 75 mg/día (fumadores +35 mg/día)",
+      embarazo: "85 mg/día",
+      lactancia: "120 mg/día",
+      mayores65: "90 mg/día",
+    },
+    ponderacionTotal: 1.6,
   },
 };
 
@@ -96,9 +179,248 @@ export const NIVELES_RIESGO = {
       recomendacion: "Optimizar fuentes alimentarias",
       descripcionExtendida: "Su riesgo de deficiencia de vitamina B1 es moderado. Considere aumentar el consumo de alimentos ricos en tiamina como cereales integrales, legumbres, carnes (especialmente cerdo) y frutos secos. Reduzca el consumo de alcohol si aplica.",
     },
-    // Niveles adicionales y para otras vitaminas...
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626", // error
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B1 es alto. Además de optimizar su dieta, debería considerar suplementación con tiamina. Si presenta síntomas neurologíicos o cardiovasculares, consulte con un profesional de la salud.",
+    }
   ],
-  // Información para otras vitaminas...
+  B2: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B2 es bajo. Mantenga el consumo de alimentos como lácteos, huevos, carnes magras y vegetales de hoja verde.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Aumentar fuentes alimentarias",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B2 es moderado. Incremente el consumo de lácteos, huevos, carnes magras, vegetales de hoja verde y cereales enriquecidos.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B2 es alto. Considere suplementación con riboflavina además de modificar su dieta. Observe si presenta síntomas como inflamación en labios, lengua o piel.",
+    }
+  ],
+  B3: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B3 es bajo. Mantenga su consumo actual de carnes, pescados, cereales integrales y legumbres.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Aumentar ingesta de niacina",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B3 es moderado. Incremente el consumo de carnes magras, atún, champiñones, aguacate y semillas de girasol.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B3 es alto. Considere suplementación con niacina y consulte a un profesional de la salud, especialmente si presenta síntomas dermatológicos o digestivos.",
+    }
+  ],
+  B5: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B5 es bajo. Mantenga una dieta variada que incluya aguacate, yogur, legumbres y carnes.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Diversificar fuentes alimentarias",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B5 es moderado. Incluya más alimentos ricos en ácido pantoténico como aguacate, huevos, champinones, y brócoli en su dieta.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B5 es alto. Aunque es rara, la deficiencia puede causar fatiga y problemas neurológicos. Considere suplementación.",
+    }
+  ],
+  B6: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B6 es bajo. Continúe con su consumo actual de carnes, pescados, plátanos, patatas y garbanzos.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Aumentar fuentes alimentarias",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B6 es moderado. Incremente el consumo de alimentos ricos en piridoxina como plátanos, carnes, pescados y patatas.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B6 es alto. Considere suplementación, especialmente si toma medicamentos que interfíieren con su metabolismo o si presenta síntomas neurológicos.",
+    }
+  ],
+  B7: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de biotina es bajo. Mantenga su consumo actual de huevos, nueces, semillas y aguacate.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Optimizar ingesta de biotina",
+      descripcionExtendida: "Su riesgo de deficiencia de biotina es moderado. Incremente el consumo de yema de huevo, hígado, frutos secos y aguacate.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de biotina es alto. Considere suplementación, especialmente si presenta problemas de piel, cabello o uñas.",
+    }
+  ],
+  B9: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de ácido fólico es bajo. Mantenga su consumo de vegetales de hoja verde, legumbres y frutas cítricas.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Aumentar ingesta de folatos",
+      descripcionExtendida: "Su riesgo de deficiencia de ácido fólico es moderado. Incremente el consumo de vegetales de hoja verde oscuro, legumbres, frutas cítricas y cereales fortificados.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación urgente",
+      descripcionExtendida: "Su riesgo de deficiencia de ácido fólico es alto. Se recomienda suplementación inmediata, especialmente en caso de embarazo o antecedentes de anemia.",
+    }
+  ],
+  B12: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B12 es bajo. Mantenga su consumo actual de alimentos de origen animal o suplementos si es vegetariano/vegano.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Optimizar fuentes de B12",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B12 es moderado. Incremente el consumo de alimentos ricos en cobalamina como carnes rojas, pescados, huevos y lácteos. Si es vegetariano o vegano, considere alimentos fortificados.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación urgente",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina B12 es alto. Requiere suplementación y posiblemente evaluación médica, especialmente si es vegano, mayor de 60 años o presenta síntomas neurológicos o fatiga crónica.",
+    }
+  ],
+  C: [
+    {
+      min: 0,
+      max: 2.5,
+      etiqueta: "bajo",
+      icono: "✓",
+      color: "#16a34a",
+      recomendacion: "Mantener ingesta actual",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina C es bajo. Continúe consumiendo frutas y verduras frescas diariamente.",
+    },
+    {
+      min: 2.5,
+      max: 5.5,
+      etiqueta: "medio",
+      icono: "!",
+      color: "#f59e0b",
+      recomendacion: "Aumentar consumo de cítricos",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina C es moderado. Incremente el consumo de cítricos, kiwi, fresas, pimientos, brócoli y tomates. Si es fumador, sus necesidades son mayores.",
+    },
+    {
+      min: 5.5,
+      max: 10,
+      etiqueta: "alto",
+      icono: "⚠️",
+      color: "#dc2626",
+      recomendacion: "Suplementación recomendada",
+      descripcionExtendida: "Su riesgo de deficiencia de vitamina C es alto. Además de aumentar el consumo de frutas y verduras frescas, se recomienda suplementación, especialmente si es fumador o tiene problemas de cicatrización.",
+    }
+  ]
 };
 
 export default NUTRIENTES_INFO;
