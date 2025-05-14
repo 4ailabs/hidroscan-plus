@@ -9,6 +9,7 @@ const BarraContenedor = styled.div`
   border-radius: 3px;
   margin-bottom: 20px;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const BarraProgreso = styled.div`
@@ -26,18 +27,58 @@ const TextoProgreso = styled.div`
   margin-bottom: 5px;
 `;
 
+const SeccionesContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  margin-bottom: 15px;
+`;
+
+const SeccionIndicador = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: ${props => 
+    props.activa 
+      ? props.theme.colors.primary 
+      : props.completada 
+        ? props.theme.colors.success + '80'
+        : '#e0e0e0'
+  };
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
+`;
+
 // Componente de barra de progreso
-const BarraProgresoComponente = ({ actual, total }) => {
-  const progreso = total > 0 ? actual / total : 0;
+const BarraProgresoComponente = ({ secciones, seccionActual, onClickSeccion }) => {
+  const progreso = secciones.length > 0 ? (seccionActual + 1) / secciones.length : 0;
   
   return (
     <>
       <TextoProgreso>
-        {actual} de {total} {total === 1 ? 'sección' : 'secciones'}
+        {seccionActual + 1} de {secciones.length} {secciones.length === 1 ? 'sección' : 'secciones'}
       </TextoProgreso>
+      
       <BarraContenedor>
         <BarraProgreso progreso={progreso} />
       </BarraContenedor>
+      
+      {secciones.length > 1 && (
+        <SeccionesContainer>
+          {secciones.map((_, index) => (
+            <SeccionIndicador 
+              key={index}
+              activa={index === seccionActual}
+              completada={index < seccionActual}
+              onClick={() => onClickSeccion(index)}
+            />
+          ))}
+        </SeccionesContainer>
+      )}
     </>
   );
 };
