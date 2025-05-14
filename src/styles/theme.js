@@ -1,57 +1,41 @@
-// Tema claro por defecto
+// Definición de temas para la aplicación
+
 export const theme = {
   colors: {
-    primary: '#2563eb',
-    secondary: '#1e40af',
-    background: '#F8F9FA',
-    text: '#212529',
-    dark: '#1a1a1a',
-    light: '#ffffff',
-    error: '#dc2626',
-    warning: '#f59e0b',
-    success: '#16a34a',
+    primary: '#2563eb',    // Azul principal
+    secondary: '#1e40af',  // Azul más oscuro
+    background: '#F8F9FA', // Gris muy claro
+    dark: '#121212',       // Casi negro para modo oscuro
+    text: '#212529',       // Gris muy oscuro (casi negro)
+    error: '#dc2626',      // Rojo
+    warning: '#f59e0b',    // Ámbar
+    success: '#16a34a',    // Verde
   },
   fonts: {
-    family: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
     baseSize: 16,
-    heading: {
-      small: 1.1,
-      medium: 1.3,
-      large: 1.8,
-    },
+    family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   },
-  borderRadius: 12,
   shadows: {
-    sm: '0 1px 3px rgba(0,0,0,0.1)',
-    md: '0 4px 6px rgba(0,0,0,0.1)',
-    lg: '0 10px 15px rgba(0,0,0,0.1)',
+    sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
+    md: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
   },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
+  breakpoints: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
   },
-  animaciones: true,
 };
 
-// Tema oscuro
 export const darkTheme = {
   ...theme,
   colors: {
     ...theme.colors,
-    background: '#121212',
-    dark: '#1e1e1e',
-    text: '#e0e0e0',
-    light: '#2a2a2a',
-    primary: '#3b82f6',
-    secondary: '#60a5fa',
-  },
-  shadows: {
-    sm: '0 1px 3px rgba(0,0,0,0.3)',
-    md: '0 4px 6px rgba(0,0,0,0.3)',
-    lg: '0 10px 15px rgba(0,0,0,0.3)',
+    primary: '#3b82f6',    // Azul principal (más brillante para modo oscuro)
+    secondary: '#60a5fa',   // Azul más claro
+    background: '#121212',  // Casi negro
+    dark: '#1f1f1f',        // Gris muy oscuro
+    text: '#E9ECEF',        // Gris muy claro (casi blanco)
   },
 };

@@ -19,7 +19,7 @@ const GlobalStyles = createGlobalStyle`
   
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: 0.5em;
   }
   
@@ -27,25 +27,23 @@ const GlobalStyles = createGlobalStyle`
     margin-bottom: 1em;
   }
   
-  button {
-    cursor: pointer;
+  a {
+    color: ${props => props.theme.colors.primary};
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  button, input, select, textarea {
     font-family: inherit;
+    font-size: inherit;
   }
   
-  /* Estilo personalizado para campos de formulario */
-  input, select, textarea, button {
-    font-family: inherit;
-    font-size: ${props => props.theme.fonts.baseSize}px;
-  }
-  
-  input:focus, select:focus, textarea:focus {
-    outline: 2px solid ${props => props.theme.colors.primary};
-    outline-offset: 1px;
-  }
-  
-  /* Animaciones condicionales */
-  * {
-    transition: ${props => props.theme.animaciones ? 'all 0.3s ease' : 'none'};
+  ul, ol {
+    padding-left: 1.5em;
+    margin-bottom: 1em;
   }
 `;
 
