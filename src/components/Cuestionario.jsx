@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { SECCIONES_CUESTIONARIO } from '../data/seccionesCuestionario';
+import { SECCIONES_CUESTIONARIO } from '../data/cuestionario';
 import Pregunta from './Pregunta';
 import BarraProgreso from './BarraProgreso';
 
