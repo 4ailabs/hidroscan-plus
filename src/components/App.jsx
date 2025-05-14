@@ -6,6 +6,7 @@ import PantallaInicio from './PantallaInicio';
 import Cuestionario from './Cuestionario/index';
 import ResultadosVitaminas from './ResultadosVitaminas';
 import { NUTRIENTES_INFO } from '../data/nutrientesInfo';
+import { useApp } from '../context/AppContext';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -68,24 +69,51 @@ const defaultConfig = {
 };
 
 const App = () => {
-  // Estados principales
-  const [pantallaActual, setPantallaActual] = useState('inicio');
-  const [respuestas, setRespuestas] = useState({});
-  const [resultados, setResultados] = useState(null);
-  const [config, setConfig] = useState(defaultConfig);
+  // Obtener el contexto global (si está disponible)
+  const appContext = useApp();
+  
+  // Estados locales (como respaldo si el contexto no está disponible)
+  const [pantallaActualLocal, setPantallaActualLocal] = useState('inicio');
+  const [respuestasLocal, setRespuestasLocal] = useState({});
+  const [resultadosLocal, setResultadosLocal] = useState(null);
+  const [configLocal, setConfigLocal] = useState(defaultConfig);
+  
+  // Usar valores del contexto si están disponibles, de lo contrario usar estados locales
+  const pantallaActual = appContext?.pantallaActual || pantallaActualLocal;
+  const respuestas = appContext?.respuestas || respuestasLocal;
+  const resultados = appContext?.resultados || resultadosLocal;
+  const config = appContext?.config || configLocal;
   
   // Función para navegar entre pantallas
   const navegarA = (pantalla, data) => {
     console.log("Navegando a:", pantalla, data);
     
-    if (pantalla === 'resultados' && data?.respuestas) {
-      // Calculamos los resultados antes de cambiar de pantalla
-      const resultadosCalculados = calcularResultados(data.respuestas);
-      setRespuestas(data.respuestas);
-      setResultados(resultadosCalculados);
+    try {
+      if (pantalla === 'resultados' && data?.respuestas) {
+        // Calculamos los resultados antes de cambiar de pantalla
+        const resultadosCalculados = calcularResultados(data.respuestas);
+        
+        // Si tenemos contexto, usamos sus funciones, de lo contrario usamos las locales
+        if (appContext?.setRespuestas && appContext?.setResultados) {
+          appContext.setRespuestas(data.respuestas);
+          appContext.setResultados(resultadosCalculados);
+        } else {
+          setRespuestasLocal(data.respuestas);
+          setResultadosLocal(resultadosCalculados);
+        }
+      }
+      
+      // Actualizar la pantalla actual
+      if (appContext?.navegarA) {
+        appContext.navegarA(pantalla);
+      } else {
+        setPantallaActualLocal(pantalla);
+      }
+    } catch (error) {
+      console.error("Error al navegar:", error);
+      // Usar el estado local como fallback
+      setPantallaActualLocal(pantalla);
     }
-    
-    setPantallaActual(pantalla);
   };
   
   // Función para evaluar la intensidad de síntomas
@@ -335,15 +363,26 @@ const App = () => {
   
   // Renderizar la pantalla actual
   const renderizarPantallaActual = () => {
-    switch (pantallaActual) {
-      case 'inicio':
-        return <PantallaInicio navegarA={navegarA} />;
-      case 'cuestionario':
-        return <Cuestionario navegarA={navegarA} />;
-      case 'resultados':
-        return <ResultadosVitaminas resultados={resultados} navegarA={navegarA} />;
-      default:
-        return <PantallaInicio navegarA={navegarA} />;
+    try {
+      switch (pantallaActual) {
+        case 'inicio':
+          return <PantallaInicio navegarA={navegarA} />;
+        case 'cuestionario':
+          return <Cuestionario navegarA={navegarA} />;
+        case 'resultados':
+          return <ResultadosVitaminas resultados={resultados} navegarA={navegarA} />;
+        default:
+          return <PantallaInicio navegarA={navegarA} />;
+      }
+    } catch (error) {
+      console.error("Error al renderizar pantalla:", error);
+      return (
+        <div style={{ padding: '20px', color: 'red' }}>
+          <h2>Error al cargar la pantalla</h2>
+          <p>Ha ocurrido un error inesperado. Por favor, intenta recargar la página.</p>
+          <button onClick={() => window.location.reload()}>Recargar página</button>
+        </div>
+      );
     }
   };
 
