@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import GlobalStyles from '../styles/globalStyles';
 import { theme, darkTheme } from '../styles/theme';
 import PantallaInicio from './PantallaInicio';
-import Cuestionario from './Cuestionario';
+import Cuestionario from './Cuestionario/index';
 import ResultadosVitaminas from './ResultadosVitaminas';
 import { NUTRIENTES_INFO } from '../data/nutrientesInfo';
 
