@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // Hook personalizado para gestionar el estado del cuestionario
-const useCuestionario = (seccionesCuestionario, respuestasIniciales = {}) => {
+const useCuestionario = (seccionesCuestionario = [], respuestasIniciales = {}) => {
   const [respuestas, setRespuestas] = useState(respuestasIniciales);
   const [seccionActual, setSeccionActual] = useState(0);
   const [preguntasAdicionales, setPreguntasAdicionales] = useState({});
@@ -37,6 +37,10 @@ const useCuestionario = (seccionesCuestionario, respuestasIniciales = {}) => {
         // Scroll al inicio de la página para mejor UX
         if (typeof window !== 'undefined') window.scrollTo(0, 0);
       }
+    } else if (typeof direccion === 'number' && direccion >= 0 && direccion < seccionesCuestionario.length) {
+      // Si se proporciona un índice directamente
+      setSeccionActual(direccion);
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
     }
   };
 
@@ -57,13 +61,35 @@ const useCuestionario = (seccionesCuestionario, respuestasIniciales = {}) => {
               'No, asimétrico',
               'No estoy seguro/a',
             ],
-            nutrients: ['B12'],
+            nutrientes: ['B12'],
             seccionOriginal: 'sintomas_especificos',
           };
         }
       }
       
-      // Más lógica adaptativa se puede agregar aquí
+      // Si es vegetariano/vegano por más de 1 año pero no toma suplementos de B12
+      if ((respuestas.alimentacion === 'Vegana (ningún producto animal)' || 
+          respuestas.alimentacion === 'Vegetariana (sin carne ni pescado)') && 
+          respuestas.duracion_dieta && 
+          ['1-5 años', 'Más de 5 años'].includes(respuestas.duracion_dieta)) {
+          
+        if (!respuestas.suplementos_b || 
+            !respuestas.suplementos_b.includes('B12 (cobalamina/metilcobalamina)')) {
+          nuevasPreguntas.b12_recomendacion = {
+            id: 'b12_recomendacion',
+            texto: '¿Sabía que las personas que siguen dietas vegetarianas o veganas deberían suplementar con vitamina B12?',
+            tipo: 'radio',
+            opciones: [
+              'Sí, pero no lo hago',
+              'Sí, planeo hacerlo',
+              'No lo sabía',
+              'Ya tomo otros suplementos',
+            ],
+            nutrientes: ['B12'],
+            seccionOriginal: 'suplementacion',
+          };
+        }
+      }
       
       setPreguntasAdicionales(nuevasPreguntas);
     };
@@ -78,7 +104,7 @@ const useCuestionario = (seccionesCuestionario, respuestasIniciales = {}) => {
     cambiarSeccion,
     preguntasAdicionales,
     seccionesTotales: seccionesCuestionario.length,
-    seccionActualInfo: seccionesCuestionario[seccionActual],
+    seccionesFiltradas: seccionesCuestionario,
   };
 };
 
