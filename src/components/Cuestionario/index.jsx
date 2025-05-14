@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useApp } from '../../context/AppContext.jsx';
+import { useApp } from '../../context/AppContext';
 import useCuestionario from '../../hooks/useCuestionario';
+import { SECCIONES_CUESTIONARIO } from '../../data/cuestionario';
 import Seccion from './Seccion';
 import BarraProgreso from './BarraProgreso';
 
@@ -60,10 +61,10 @@ const BotonNavegacion = styled.button`
     ? 'none' 
     : `1px solid ${props.theme.colors.primary}`
   };
-  border-radius: ${props => props.theme.borderRadius.md};
+  border-radius: ${props => props.theme.borderRadius ? props.theme.borderRadius.md : '8px'};
   padding: 10px 20px;
   font-size: ${props => props.theme.fonts.baseSize * 1}px;
-  font-weight: ${props => props.theme.fonts.weights.medium};
+  font-weight: ${props => props.theme.fonts.weights ? props.theme.fonts.weights.medium : 500};
   cursor: pointer;
   transition: all 0.3s ease;
   
@@ -89,22 +90,44 @@ const BotonNavegacion = styled.button`
  * Componente principal del cuestionario
  * @returns {JSX.Element} - Elemento de React
  */
-const Cuestionario = () => {
-  const { navegarA, respuestas: respuestasGlobales, config } = useApp();
+const Cuestionario = ({ navegarA }) => {
+  const { config, respuestas: respuestasGlobales, actualizarRespuesta } = useApp();
   const [mostrarRequeridos, setMostrarRequeridos] = useState(false);
+  
+  // Filtrar secciones según la configuración global
+  const seccionesFiltradas = SECCIONES_CUESTIONARIO.filter(
+    seccion => !seccion.mostrarSiGlobal || seccion.mostrarSiGlobal(config)
+  );
   
   // Usar el hook personalizado para manejar la lógica del cuestionario
   const {
-    seccionesFiltradas,
+    respuestas,
+    actualizarRespuesta: actualizar,
     seccionActual,
-    preguntasAdicionales,
-    navegarSeccion,
-    estanPreguntasRequeridas,
-    haySuficientesRespuestas
-  } = useCuestionario(respuestasGlobales);
+    cambiarSeccion,
+    preguntasAdicionales
+  } = useCuestionario(seccionesFiltradas, respuestasGlobales);
+  
+  // Manejar cambios en las respuestas
+  const manejarRespuestaCambio = (preguntaId, valor) => {
+    actualizar(preguntaId, valor);
+    actualizarRespuesta(preguntaId, valor);
+  };
+  
+  // Verificar si se han respondido las preguntas requeridas
+  const estanPreguntasRequeridas = () => {
+    // En esta versión simple, no hay preguntas requeridas
+    return true;
+  };
+  
+  // Verificar si hay suficientes respuestas para un análisis útil
+  const haySuficientesRespuestas = () => {
+    // Para demo, 3 respuestas es suficiente
+    return Object.keys(respuestas).length >= 3;
+  };
   
   // Calcular si puede continuar a la siguiente sección
-  const puedeAvanzar = estanPreguntasRequeridas(seccionActual);
+  const puedeAvanzar = estanPreguntasRequeridas();
   
   // Manejar la navegación entre secciones
   const manejarClickNavegacion = (direccion) => {
@@ -114,7 +137,7 @@ const Cuestionario = () => {
         navegarA('inicio');
       } else {
         // Navegar a la sección anterior
-        navegarSeccion('anterior');
+        cambiarSeccion('anterior');
       }
     } else if (direccion === 'siguiente') {
       // Verificar si se han respondido las preguntas requeridas
@@ -124,18 +147,18 @@ const Cuestionario = () => {
       }
       
       // Verificar si es la última sección
-      if (seccionActual === seccionesFiltradas.length - 1) {
+      if (seccionActual >= seccionesFiltradas.length - 1) {
         // Verificar si hay suficientes respuestas para resultados útiles
         if (haySuficientesRespuestas()) {
           // Navegar a la pantalla de resultados
-          navegarA('resultados');
+          navegarA('resultados', { respuestas });
         } else {
           // Mostrar un aviso si no hay suficientes respuestas
           alert('Por favor, complete más preguntas para obtener resultados precisos.');
         }
       } else {
         // Navegar a la siguiente sección
-        navegarSeccion('siguiente');
+        cambiarSeccion('siguiente');
         // Resetear el indicador de campos requeridos
         setMostrarRequeridos(false);
       }
@@ -147,7 +170,8 @@ const Cuestionario = () => {
     if (indice <= seccionActual) {
       // Solo permitir navegar a secciones anteriores o la actual
       setMostrarRequeridos(false);
-      navegarSeccion(indice < seccionActual ? 'anterior' : 'siguiente');
+      // Implementar la lógica para cambiar directamente a una sección
+      setSeccionActual(indice);
     }
   };
   
@@ -174,7 +198,7 @@ const Cuestionario = () => {
   return (
     <CuestionarioContainer>
       <Encabezado>
-        <Titulo>Evaluación de nutrientes</Titulo>
+        <Titulo>Cuestionario de Evaluación</Titulo>
         <Subtitulo>Complete las siguientes preguntas para evaluar su riesgo de deficiencias nutricionales.</Subtitulo>
       </Encabezado>
       
@@ -187,18 +211,21 @@ const Cuestionario = () => {
       )}
       
       <SeccionActualContainer>
-        <Seccion 
-          seccion={seccionActualData}
-          preguntasAdicionales={preguntasAdicionales}
-          mostrarRequeridos={mostrarRequeridos}
-        />
+        {seccionActualData && (
+          <Seccion 
+            seccion={seccionActualData}
+            respuestas={respuestas}
+            onRespuestaChange={manejarRespuestaCambio}
+            mostrarRequeridos={mostrarRequeridos}
+          />
+        )}
       </SeccionActualContainer>
       
       <BotonesNavegacion>
         <BotonNavegacion 
           onClick={() => manejarClickNavegacion('anterior')}
         >
-          {seccionActual === 0 ? "Cancelar" : "Anterior"}
+          {seccionActual === 0 ? "Volver al inicio" : "Anterior"}
         </BotonNavegacion>
         
         <BotonNavegacion 
@@ -207,7 +234,7 @@ const Cuestionario = () => {
         >
           {seccionActual === seccionesFiltradas.length - 1 
             ? "Ver resultados" 
-            : "Siguiente"
+            : "Siguiente pregunta"
           }
         </BotonNavegacion>
       </BotonesNavegacion>
